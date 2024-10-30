@@ -8,7 +8,12 @@ import Contract.Numeric.BigNum as BigNum
 import Contract.PlutusData (PlutusData(List, Map, Bytes, Constr), toData)
 import Contract.Prim.ByteArray (hexToByteArrayUnsafe)
 import Contract.Scripts (PlutusScript)
-import Contract.TextEnvelope (decodeTextEnvelope, plutusScriptV1FromEnvelope, plutusScriptV2FromEnvelope, plutusScriptV3FromEnvelope)
+import Contract.TextEnvelope
+  ( decodeTextEnvelope
+  , plutusScriptV1FromEnvelope
+  , plutusScriptV2FromEnvelope
+  , plutusScriptV3FromEnvelope
+  )
 import Control.Monad.Error.Class (class MonadError, class MonadThrow, liftMaybe)
 import Ctl.Internal.ApplyArgs (applyArgs)
 import Ctl.Internal.Cardano.TextEnvelope (TextEnvelope)
@@ -420,6 +425,8 @@ lookupAux
   -> m PlutusScript
 lookupAux decodeScript scripts name = do
   let error_ msg = error $ msg <> name
-  (txt :: String) <- liftMaybe (error_ "Can't find the script with name ") $ Object.lookup name scripts
-  envelope <- liftMaybe (error_ "Can't decode envelope for script ") $ decodeTextEnvelope txt
+  (txt :: String) <- liftMaybe (error_ "Can't find the script with name ") $
+    Object.lookup name scripts
+  envelope <- liftMaybe (error_ "Can't decode envelope for script ") $
+    decodeTextEnvelope txt
   liftMaybe (error_ "Can't decode script ") $ decodeScript envelope
